@@ -1,2 +1,2 @@
 # uozapp
-A project by malve, greg and dalte
+A project by malve, greg and dario
