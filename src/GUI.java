@@ -35,7 +35,6 @@ public class GUI implements Runnable{
 
     /** method to set gui style **/
     public void set_Gui_style(){
-
         this.inviaButton.setEnabled(false);
         this.areaMessaggi.setFont(new Font("helevtica",Font.PLAIN, 17));
         this.areaMessaggi.setEditable(false);
@@ -159,11 +158,14 @@ public class GUI implements Runnable{
                     });
 
                     inviaButton.addActionListener(e1 -> {
-                        client.send_data(contenutoMessaggio.getText());
-                        StyleConstants.setAlignment(obj, StyleConstants.ALIGN_LEFT);
-                        doc.setParagraphAttributes(0, doc.getLength(), obj, false);
-                        areaMessaggi.setText(areaMessaggi.getText() + "\n" + nickname.getText() + ": " + contenutoMessaggio.getText());
-                        contenutoMessaggio.setText("");
+                        if (clientORserver){
+                            client.send_data(contenutoMessaggio.getText());
+                            contenutoMessaggio.setText("");
+                        }else{
+                            server.send_data(contenutoMessaggio.getText());
+                            contenutoMessaggio.setText("");
+                        }
+
                     });
 
 
