@@ -55,6 +55,17 @@ public class GUI implements Runnable{
             }
         });
 
+        /** Set invia messaggio button **/
+        inviaButton.addActionListener(e1 -> {
+            if (clientORserver){
+                client.send_data(contenutoMessaggio.getText());
+                contenutoMessaggio.setText("");
+            }else{
+                server.send_data(contenutoMessaggio.getText());
+                contenutoMessaggio.setText("");
+            }
+        });
+
         /** Set send message with Enter key**/
         this.contenutoMessaggio.addKeyListener(new KeyAdapter() {
             @Override
@@ -156,18 +167,6 @@ public class GUI implements Runnable{
                             }
                         }
                     });
-
-                    inviaButton.addActionListener(e1 -> {
-                        if (clientORserver){
-                            client.send_data(contenutoMessaggio.getText());
-                            contenutoMessaggio.setText("");
-                        }else{
-                            server.send_data(contenutoMessaggio.getText());
-                            contenutoMessaggio.setText("");
-                        }
-
-                    });
-
 
                 }else if (client.error_code == 2){
                     errori.setForeground(Color.red);
