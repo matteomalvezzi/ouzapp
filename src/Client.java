@@ -58,20 +58,11 @@ public class Client implements Runnable {
     /*** method Receive data ***/
     @Override
     public void run() {
-
         System.out.println("Sto ascoltando...");
-        boolean flag = true;
 
-        while(flag){
+        while(true){
             try{
                 data_recive = in.readLine();
-
-                if(data_recive.equals("quit"))
-                    flag = false;
-                else {
-                    System.out.println("Data recive str: " + data_recive);
-                }
-
             }catch (Exception e){
                 System.out.println("Error recive");
                 e.printStackTrace();

@@ -29,7 +29,9 @@ public class GUI implements Runnable{
     private JTextField contenutoMessaggio;
     private JTextPane areaMessaggi;
     private Client client;
+    private Server server;
     private int codiceErrore;
+    private boolean clientORserver;
 
     /** method to set gui style **/
     public void set_Gui_style(){
@@ -116,12 +118,12 @@ public class GUI implements Runnable{
                 client = new Client((Integer) porta_client.getValue(), ip_clientTextField.getText());
 
                 if (client.error_code == 1){
-
+                    clientORserver = true; // the pc will be a client
                     set_information("---CONNESSIONE STABILITA---\n");
 
-                    Thread t1 = new Thread(client);
-                    t1.start();
-                    Fake_putty.startSecondThread();
+                    Thread tClient = new Thread(client);
+                    tClient.start();
+                    Fake_putty.startSecondThreadClient();
 
                     System.out.println("GUI: " + client.data_recive);
 
@@ -175,9 +177,19 @@ public class GUI implements Runnable{
             }
 
         } else if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty()) {
-            //il pc diventa server
-            System.out.println("server");
-            errori.setText("");
+            /** the pc becomes the server **/
+            server = new Server((Integer) porta_server.getValue(),nickname.getText());
+            if (server.error_code == 1){
+                set_information("connessione avvenuta correttamente...");
+                clientORserver = false; // the pc will be a server
+
+                Thread tServer = new Thread(server); // we're using threads to listen and write any change
+                tServer.start();
+                Fake_putty.startSecondThreadServer();
+
+            }else if (server.error_code == 2){
+                set_error("errore, qualcosa è andato storto, nessun client si e' connesso");
+            }
         } else {
             errori.setForeground(Color.red);
             errori.setFont(new Font("Helvetica", Font.BOLD, 13));
@@ -199,17 +211,46 @@ public class GUI implements Runnable{
         set_Listener();
 
     }
-
+    /** This method will be executed by the second thread **/
     public void run() {
-        String recived_data = client.data_recive;
-        System.out.println("fuori   " + recived_data);
-        while (true){
-            if (!recived_data.equals(client.data_recive)){
-                System.out.println("dentro   " + recived_data);
-                recived_data = client.data_recive;
-                areaMessaggi.setText(areaMessaggi.getText() + "\n" + recived_data);
+
+        if (clientORserver){
+            /**in case the pc acts as a client this function will listen to anythig the server will write, if something is added, this will write it on the chatbox**/
+            String recived_data = client.data_recive;
+
+            while (true){
+
+                try {
+                    System.out.println("dato dopo " + client.data_recive);
+                    if(!client.data_recive.equals(recived_data)){
+                        System.out.println("dentro   " + recived_data);
+                        recived_data = client.data_recive;
+                        areaMessaggi.setText(areaMessaggi.getText() + "\n" + recived_data);
+                    }
+                }
+                catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            /**in case the pc acts as a server this function will listen to anythig the client will write, if something is added, this will write it on the chatbox**/
+            String recived_data = server.data_recive;
+
+            while (true){
+                try {
+                    System.out.println("dato dopo " + server.data_recive);
+                    if(!server.data_recive.equals(recived_data)){
+                        System.out.println("dentro   " + recived_data);
+                        recived_data = server.data_recive;
+                        areaMessaggi.setText(areaMessaggi.getText() + "\n" + recived_data);
+                    }
+                }
+                catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
 
     private void createUIComponents() {

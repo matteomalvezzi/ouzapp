@@ -53,8 +53,13 @@ public class Fake_putty{
             e.printStackTrace();
         }
     }
- /**start listening thread, this thread will control if any change is committed on our variable data_recive**/
-    public static void startSecondThread(){
+ /**start listening thread, this thread will control if any change is committed on our variable data_recive **/
+    public static void startSecondThreadClient(){
+        Thread t1 = new Thread(obj);
+        t1.start();
+    }
+
+    public static void startSecondThreadServer(){
         Thread t1 = new Thread(obj);
         t1.start();
     }
