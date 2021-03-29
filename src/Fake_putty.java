@@ -1,10 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Fake_putty {
+public class Fake_putty{
 
     /** public Attributes **/
     public static final Dimension MAIN_FRAME_DIMENSION = new Dimension(600, 450);
+    private static GUI obj;// obj will be used for our second thread
+
 
     /** private Attributes **/
 
@@ -38,7 +40,8 @@ public class Fake_putty {
                 }
             }
 
-            JFrame frame = new_frame(new GUI());
+            obj = new GUI();
+            JFrame frame = new_frame(obj);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setSize(Fake_putty.MAIN_FRAME_DIMENSION);
             ImageIcon foto = new ImageIcon("fake_putty.png");
@@ -50,5 +53,9 @@ public class Fake_putty {
             e.printStackTrace();
         }
     }
-
+ /**start listening thread, this thread will control if any change is committed on our variable data_recive**/
+    public static void startSecondThread(){
+        Thread t1 = new Thread(obj);
+        t1.start();
+    }
 }

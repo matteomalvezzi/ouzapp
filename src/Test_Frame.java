@@ -8,5 +8,4 @@ public class Test_Frame extends JFrame{
         this.setSize(200,200);
         this.setLayout(new GridLayout());
     }
-    //piccolo push
 }

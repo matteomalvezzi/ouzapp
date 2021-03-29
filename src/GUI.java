@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
-public class GUI {
+public class GUI implements Runnable{
 
     /** private Attribute **/
     private JPanel pannello_main;
@@ -50,7 +50,6 @@ public class GUI {
         this.procediButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 start_message(); //Start message method
             }
         });
@@ -122,6 +121,7 @@ public class GUI {
 
                     Thread t1 = new Thread(client);
                     t1.start();
+                    Fake_putty.startSecondThread();
 
                     System.out.println("GUI: " + client.data_recive);
 
@@ -198,6 +198,18 @@ public class GUI {
 
         set_Listener();
 
+    }
+
+    public void run() {
+        String recived_data = client.data_recive;
+        System.out.println("fuori   " + recived_data);
+        while (true){
+            if (!recived_data.equals(client.data_recive)){
+                System.out.println("dentro   " + recived_data);
+                recived_data = client.data_recive;
+                areaMessaggi.setText(areaMessaggi.getText() + "\n" + recived_data);
+            }
+        }
     }
 
     private void createUIComponents() {

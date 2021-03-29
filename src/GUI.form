@@ -187,7 +187,12 @@
                 </constraints>
                 <properties/>
                 <border type="none"/>
-                <children/>
+                <children>
+                  <component id="ca2f2" class="javax.swing.JTextPane" binding="areaMessaggi">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
               </scrollpane>
               <component id="22874" class="javax.swing.JButton" binding="inviaButton" default-binding="true">
                 <constraints>
