@@ -91,10 +91,12 @@ public class GUI implements Runnable{
 
     /** set error method **/
     public void set_error(String error){
+        this.errori.setFont(new Font("helvetica",Font.BOLD,13));
         this.errori.setForeground(Color.RED);
         this.errori.setText(error);
     }
     public void set_information(String information){
+        this.errori.setFont(new Font("helvetica",Font.BOLD,13));
         this.errori.setForeground(Color.GREEN);
         this.errori.setText(information);
     }
@@ -178,6 +180,8 @@ public class GUI implements Runnable{
 
         } else if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty()) {
             /** the pc becomes the server **/
+
+            set_information("Server in attesa di un client...");
             server = new Server((Integer) porta_server.getValue(),nickname.getText());
             if (server.error_code == 1){
                 set_information("connessione avvenuta correttamente...");
@@ -191,9 +195,7 @@ public class GUI implements Runnable{
                 set_error("errore, qualcosa è andato storto, nessun client si e' connesso");
             }
         } else {
-            errori.setForeground(Color.red);
-            errori.setFont(new Font("Helvetica", Font.BOLD, 13));
-            errori.setText("Errore, inserisci i parametri correttemente!");
+            set_error("Errore, inserisci i parametri correttemente!");
         }
 
     }
@@ -215,7 +217,7 @@ public class GUI implements Runnable{
     public void run() {
 
         if (clientORserver){
-            /**in case the pc acts as a client this function will listen to anythig the server will write, if something is added, this will write it on the chatbox**/
+            /**in case the pc acts as a client this function will listen to anything the server will write, if something is added, this will write it on the chatbox**/
             String recived_data = client.data_recive;
 
             while (true){
@@ -233,6 +235,7 @@ public class GUI implements Runnable{
                 }
             }
         }else {
+
             /**in case the pc acts as a server this function will listen to anythig the client will write, if something is added, this will write it on the chatbox**/
             String recived_data = server.data_recive;
 
@@ -250,7 +253,6 @@ public class GUI implements Runnable{
                 }
             }
         }
-
     }
 
     private void createUIComponents() {
