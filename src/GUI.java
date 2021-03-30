@@ -28,7 +28,6 @@ public class GUI implements Runnable{
     private Client client;
     private Server server;
     private int codiceErrore;
-    private boolean clientORserver;
 
     /** method to set gui style **/
     public void set_Gui_style(){
@@ -80,10 +79,10 @@ public class GUI implements Runnable{
 
         /** Set invia messaggio button **/
         inviaButton.addActionListener(e1 -> {
-            if (clientORserver){
+            if (isClient()){
                 client.send_data(contenutoMessaggio.getText());
                 contenutoMessaggio.setText("");
-            }else{
+            }else if (isServer()){
                 server.send_data(contenutoMessaggio.getText());
                 contenutoMessaggio.setText("");
             }
@@ -98,21 +97,19 @@ public class GUI implements Runnable{
                     System.out.println("enter: " + evento);
                     if (!contenutoMessaggio.getText().isEmpty()) {
                         write_on_areaMessaggi(contenutoMessaggio.getText());
-                        if (clientORserver){
+                        if (isClient()){
                             client.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
                             contenutoMessaggio.setText("");
                         }
-                        else
+                        else if (isServer())
                         {
                             server.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
                             contenutoMessaggio.setText("");
                         }
-
                     }
                 }
             }
         });
-
     }
 
     /** get ip host method**/
@@ -142,19 +139,17 @@ public class GUI implements Runnable{
      *  Start_message
      * **/
     public void start_message(){
-
-        if (Integer.parseInt(porta_client.getValue().toString()) > 0 && !ip_clientTextField.getText().isEmpty() && porta_server.getValue().equals(0)) {
-
-            if(nickname.getText().isEmpty()){
-                set_error("Errore, inserisci il nickname!");
-            }
-            else{
+        if(nickname.getText().isEmpty()){
+            set_error("Errore, inserisci il nickname!");
+        }
+        else {
+            if (isClient()) {
                 set_information("Provo a connettermi...\n");
 
                 client = new Client((Integer) porta_client.getValue(), ip_clientTextField.getText());
 
                 if (client.error_code == 1){
-                    clientORserver = true; // the pc will be a client
+                    /** the pc becomes the client **/
                     set_information("---CONNESSIONE STABILITA---\n");
                     client.send_data(nickname.getText() + " partecipa\n");
 
@@ -169,38 +164,30 @@ public class GUI implements Runnable{
                 }else if (client.error_code == 3){
                     set_error("Errore, impossibile stabilire la connessione!\n");
                 }
+
+            } else if (isServer()) {
+                /** the pc becomes the server **/
+                    System.out.println("qui entro......");
+                    set_information("Server in attesa di un client...");
+
+                    server = new Server((Integer) porta_server.getValue(), nickname.getText());
+
+                    if (server.error_code == 1) {
+                        server.send_data(nickname.getText() + " partecipa\n");
+                        set_information("connessione avvenuta correttamente...");
+
+
+                        Thread tServer = new Thread(server); // we're using threads to listen and write any change
+                        tServer.start();
+                        Fake_putty.startSecondThreadServer();
+
+                    } else if (server.error_code == 2) {
+                        set_error("errore, qualcosa è andato storto, nessun client si e' connesso");
+                    }
+            } else {
+                set_error("Errore, inserisci i parametri correttemente!");
             }
-
-        } else if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty()) {
-            /** the pc becomes the server **/
-
-            if(nickname.getText().isEmpty()){
-                set_error("Errore, inserisci il nickname!");
-            }
-            else {
-                System.out.println("qui entro......");
-                set_information("Server in attesa di un client...");
-
-            server = new Server((Integer) porta_server.getValue(), nickname.getText());
-            if (server.error_code == 1) {
-                server.send_data(nickname.getText() + " partecipa\n");
-                set_information("connessione avvenuta correttamente...");
-
-                clientORserver = false; // the pc will be a server
-
-                Thread tServer = new Thread(server); // we're using threads to listen and write any change
-                tServer.start();
-                Fake_putty.startSecondThreadServer();
-
-            } else if (server.error_code == 2) {
-                set_error("errore, qualcosa è andato storto, nessun client si e' connesso");
-            }
-
         }
-        } else {
-            set_error("Errore, inserisci i parametri correttemente!");
-        }
-
     }
 
     /** public Constructor number 2 **/
@@ -219,7 +206,7 @@ public class GUI implements Runnable{
     /** This method will be executed by the second thread **/
     public void run() {
 
-        if (clientORserver){
+        if (isClient()){
             /**in case the pc acts as a client this function will listen to anything the server will write, if something is added, this will write it on the chatbox**/
             String recived_data = client.data_recive;
 
@@ -237,9 +224,9 @@ public class GUI implements Runnable{
                     e.printStackTrace();
                 }
             }
-        }else {
+        }else if (isServer()){
 
-            /**in case the pc acts as a server this function will listen to anythig the client will write, if something is added, this will write it on the chatbox**/
+            /**in case the pc acts as a server this function will listen to anything the client will write, if something is added, this will write it on the chatbox**/
             String recived_data = server.data_recive;
 
             while (true){
@@ -260,6 +247,21 @@ public class GUI implements Runnable{
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+    }
+    /**this method used in the method Start message is used to check if the pc acts as a client**/
+    public boolean isClient(){
+        if (Integer.parseInt(porta_client.getValue().toString()) > 0 && !ip_clientTextField.getText().isEmpty() && porta_server.getValue().equals(0))
+            return true;
+        else
+            return false;
+    }
+
+    /**this method used in the method Start message is used to check if the pc acts as a server**/
+    public boolean isServer(){
+        if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty())
+            return true;
+        else
+            return false;
     }
 
     /** getter methods **/
