@@ -5,21 +5,19 @@ public class Fake_putty{
 
     /** public Attributes **/
     public static final Dimension MAIN_FRAME_DIMENSION = new Dimension(600, 450);
-    private static GUI obj;// obj will be used for our second thread
-
 
     /** private Attributes **/
-
+    private static GUI obj;// obj will be used for our second thread
 
     /** public methods **/
 
     /**
-     * Create new frame
-     *
-     * @param user_interface
-     * @return JFrame object
-     *
-     * **/
+      * Create new frame
+      *
+      * @param user_interface
+      * @return JFrame object
+      *
+      **/
     public static JFrame new_frame(GUI user_interface){
 
         JFrame frame= new JFrame();
@@ -43,9 +41,9 @@ public class Fake_putty{
             obj = new GUI();
             JFrame frame = new_frame(obj);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.setSize(Fake_putty.MAIN_FRAME_DIMENSION);
-            ImageIcon foto = new ImageIcon("fake_putty.png");
+            ImageIcon foto = new ImageIcon("Fake_Putty.png");
             frame.setIconImage(foto.getImage());
+            frame.setSize(Fake_putty.MAIN_FRAME_DIMENSION);
             frame.setTitle("Fake_Putty");
             frame.setAlwaysOnTop(true);
 

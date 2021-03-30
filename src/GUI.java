@@ -1,9 +1,6 @@
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,14 +41,14 @@ public class GUI implements Runnable{
 
     }
 
-    /**this method will write any message on the chatBox areaMessaggi**/
+    /** this method will write any message on the chatBox areaMessaggi **/
     public void write_on_areaMessaggi(String message){
         areaMessaggi.setText(areaMessaggi.getText() + "\n" + message);
     }
 
     /** method to set listener **/
     public void set_Listener(){
-        /**if the textfield is modified the button will be clickable**/
+        /** if the textfield is modified the button will be clickable **/
         contenutoMessaggio.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 changed();
@@ -167,18 +164,11 @@ public class GUI implements Runnable{
 
                     System.out.println("GUI: " + client.data_recive);
 
-
-
-
                 }else if (client.error_code == 2){
-                    errori.setForeground(Color.red);
-                    errori.append("Errore, host sconosciuto!\n");
+                    set_error("Errore, host sconosciuto!\n");
                 }else if (client.error_code == 3){
-                    errori.setForeground(Color.red);
-                    errori.append("Errore, impossibile stabilire la connessione!\n");
+                    set_error("Errore, impossibile stabilire la connessione!\n");
                 }
-
-                System.out.println("client");
             }
 
         } else if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty()) {
