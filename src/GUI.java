@@ -45,6 +45,11 @@ public class GUI implements Runnable{
 
     }
 
+    /**this method will write any message on the chatBox areaMessaggi**/
+    public void write_on_areaMessaggi(String message){
+        areaMessaggi.setText(areaMessaggi.getText() + "\n" + message);
+    }
+
     /** method to set listener **/
     public void set_Listener(){
 
@@ -75,13 +80,17 @@ public class GUI implements Runnable{
                 if (evento == KeyEvent.VK_ENTER) {
                     System.out.println("enter: " + evento);
                     if (!contenutoMessaggio.getText().isEmpty()) {
-                        StyledDocument doc = areaMessaggi.getStyledDocument();
-                        SimpleAttributeSet obj = new SimpleAttributeSet();
-                        StyleConstants.setAlignment(obj, StyleConstants.ALIGN_LEFT);
-                        doc.setParagraphAttributes(0, doc.getLength(), obj, false);
-                        areaMessaggi.setText(areaMessaggi.getText() + "\n" + nickname.getText() + ": " + contenutoMessaggio.getText());
-                        client.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
-                        contenutoMessaggio.setText("");
+                        write_on_areaMessaggi(contenutoMessaggio.getText());
+                        if (clientORserver){
+                            client.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
+                            contenutoMessaggio.setText("");
+                        }
+                        else
+                        {
+                            server.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
+                            contenutoMessaggio.setText("");
+                        }
+
                     }
                 }
             }
