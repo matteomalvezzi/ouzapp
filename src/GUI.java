@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.sql.Time;
 
 public class GUI implements Runnable{
 
@@ -182,9 +183,16 @@ public class GUI implements Runnable{
         } else if (Integer.parseInt(porta_server.getValue().toString()) > 0 && !ip_serverTextField.getText().isEmpty() && porta_client.getValue().equals(0) && ip_clientTextField.getText().isEmpty()) {
             /** the pc becomes the server **/
 
-            set_information("Server in attesa di un client...");
-            server = new Server((Integer) porta_server.getValue(),nickname.getText());
-            if (server.error_code == 1){
+            if(nickname.getText().isEmpty()){
+                set_error("Errore, inserisci il nickname!");
+            }
+            else {
+                System.out.println("qui entro......");
+                set_information("Server in attesa di un client...");
+
+            server = new Server((Integer) porta_server.getValue(), nickname.getText());
+            if (server.error_code == 1) {
+                System.out.println("pure qui");
                 set_information("connessione avvenuta correttamente...");
                 clientORserver = false; // the pc will be a server
 
@@ -192,9 +200,11 @@ public class GUI implements Runnable{
                 tServer.start();
                 Fake_putty.startSecondThreadServer();
 
-            }else if (server.error_code == 2){
+            } else if (server.error_code == 2) {
                 set_error("errore, qualcosa è andato storto, nessun client si e' connesso");
             }
+
+        }
         } else {
             set_error("Errore, inserisci i parametri correttemente!");
         }
