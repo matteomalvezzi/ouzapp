@@ -52,6 +52,27 @@ public class GUI implements Runnable{
 
     /** method to set listener **/
     public void set_Listener(){
+        /**if the textfield is modified the button will be clickable**/
+        contenutoMessaggio.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void changed() {
+                if (contenutoMessaggio.getText().equals("")){
+                    inviaButton.setEnabled(false);
+                }
+                else {
+                    inviaButton.setEnabled(true);
+                }
+            }
+        });
 
         /** Set start message button **/
         this.procediButton.addActionListener(new ActionListener() {
@@ -120,9 +141,6 @@ public class GUI implements Runnable{
         this.errori.setForeground(Color.GREEN);
         this.errori.setText(information);
     }
-    public void add_message(String message){
-
-    }
 
     /** onClick procediButton method
      *  Start_message
@@ -156,27 +174,6 @@ public class GUI implements Runnable{
                     doc.setParagraphAttributes(0, doc.getLength(), obj, false);
                     areaMessaggi.setText( areaMessaggi.getText() + "\n" + nickname.getText() + " partecipa\n");
 
-
-                    contenutoMessaggio.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                            changed();
-                        }
-                        public void removeUpdate(DocumentEvent e) {
-                            changed();
-                        }
-                        public void insertUpdate(DocumentEvent e) {
-                            changed();
-                        }
-
-                        public void changed() {
-                            if (contenutoMessaggio.getText().equals("")){
-                                inviaButton.setEnabled(false);
-                            }
-                            else {
-                                inviaButton.setEnabled(true);
-                            }
-                        }
-                    });
 
                 }else if (client.error_code == 2){
                     errori.setForeground(Color.red);
