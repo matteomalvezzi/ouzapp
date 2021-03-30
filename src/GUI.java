@@ -11,7 +11,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
-import java.sql.Time;
 
 public class GUI implements Runnable{
 
@@ -160,6 +159,7 @@ public class GUI implements Runnable{
                 if (client.error_code == 1){
                     clientORserver = true; // the pc will be a client
                     set_information("---CONNESSIONE STABILITA---\n");
+                    client.send_data(nickname.getText() + " partecipa\n");
 
                     Thread tClient = new Thread(client);
                     tClient.start();
@@ -167,12 +167,7 @@ public class GUI implements Runnable{
 
                     System.out.println("GUI: " + client.data_recive);
 
-                    areaMessaggi.setForeground(Color.BLACK);
-                    StyledDocument doc = areaMessaggi.getStyledDocument();
-                    SimpleAttributeSet obj = new SimpleAttributeSet();
-                    StyleConstants.setAlignment(obj, StyleConstants.ALIGN_LEFT);
-                    doc.setParagraphAttributes(0, doc.getLength(), obj, false);
-                    areaMessaggi.setText( areaMessaggi.getText() + "\n" + nickname.getText() + " partecipa\n");
+
 
 
                 }else if (client.error_code == 2){
@@ -198,8 +193,9 @@ public class GUI implements Runnable{
 
             server = new Server((Integer) porta_server.getValue(), nickname.getText());
             if (server.error_code == 1) {
-                System.out.println("pure qui");
+                server.send_data(nickname.getText() + " partecipa\n");
                 set_information("connessione avvenuta correttamente...");
+
                 clientORserver = false; // the pc will be a server
 
                 Thread tServer = new Thread(server); // we're using threads to listen and write any change
